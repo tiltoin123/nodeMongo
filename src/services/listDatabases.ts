@@ -1,4 +1,4 @@
-import { client } from './client';
+import { MongoClient } from "mongodb";
 
 export interface DatabaseInfo {
     name: string;
@@ -10,13 +10,11 @@ export interface ListDatabasesResult {
     databases: DatabaseInfo[];
 }
 
-export const listDatabases = async (): Promise<ListDatabasesResult | null> => {
+export const listDatabases = async (client: MongoClient): Promise<ListDatabasesResult | null> => {
     try {
-        await client.connect();
 
         const admin = client.db().admin();
         const dbInfo = await admin.listDatabases();
-        console.log(dbInfo);
 
         return dbInfo;
     } catch (error) {

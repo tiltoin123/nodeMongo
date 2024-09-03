@@ -1,6 +1,6 @@
-import {DatabaseInfo, listDatabases,ListDatabasesResult} from './listDatabases';
+import { DatabaseInfo, listDatabases, ListDatabasesResult } from './listDatabases';
 
-export const searchDatabases = async (dbName: string): Promise<void> => {
+export const searchDatabase = async (dbName: string): Promise<DatabaseInfo | false> => {
   try {
     // Await the list of databases
     const dbInfo: ListDatabasesResult | null = await listDatabases();
@@ -8,18 +8,19 @@ export const searchDatabases = async (dbName: string): Promise<void> => {
     // Check if databases list is available
     if (!dbInfo) {
       console.log('No databases found.');
-      return;
+
     }
 
     // Search for the database by name
-    const foundDatabase = dbInfo.databases.find((db:DatabaseInfo) => db.name === dbName);
+    const foundDatabase = dbInfo?.databases.find((db: DatabaseInfo) => db.name === dbName);
 
     if (foundDatabase) {
-      console.log(`Database found: ${foundDatabase.name}`);
+      return foundDatabase
     } else {
-      console.log(`Database not found: ${dbName}`);
+      return false;
     }
   } catch (error) {
     console.error('Error listing databases:', error);
+    return false
   }
 };
