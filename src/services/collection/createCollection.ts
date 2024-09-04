@@ -1,7 +1,7 @@
 import { Collection, CollectionInfo, Document, MongoClient } from "mongodb";
-import { searchDatabase } from "./searchDatabase";
+import { searchDatabase } from "../database/searchDatabase";
 
-export const createCollection = async (client: MongoClient, dbName: string, collectionName: string): Promise<CollectionInfo | Collection<Document> | null> => {
+export const createCollection = async (client: MongoClient, dbName: string, collectionName: string): Promise<CollectionInfo | Collection<Document> | false> => {
     try {
         const dbExist = await searchDatabase(client, dbName);
         if (dbExist) {
@@ -21,6 +21,6 @@ export const createCollection = async (client: MongoClient, dbName: string, coll
 
     } catch (error) {
         console.error('Error creating or retrieving collection:', error);
-        return null; // Return null in case of an error
+        return false; // Return null in case of an error
     }
 };
