@@ -1,9 +1,10 @@
+import { MongoClient } from 'mongodb';
 import { DatabaseInfo, listDatabases, ListDatabasesResult } from './listDatabases';
 
-export const searchDatabase = async (dbName: string): Promise<DatabaseInfo | false> => {
+export const searchDatabase = async (client: MongoClient, dbName: string): Promise<DatabaseInfo | false> => {
   try {
     // Await the list of databases
-    const dbInfo: ListDatabasesResult | null = await listDatabases();
+    const dbInfo: ListDatabasesResult | null = await listDatabases(client);
 
     // Check if databases list is available
     if (!dbInfo) {

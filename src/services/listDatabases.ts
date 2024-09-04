@@ -20,7 +20,5 @@ export const listDatabases = async (client: MongoClient): Promise<ListDatabasesR
     } catch (error) {
         console.error('Error listing databases:', error);
         throw error;
-    } finally {
-        await client.close();
     }
 };
