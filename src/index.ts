@@ -1,16 +1,25 @@
 import { connect, disconect } from './services/mongoClient';
-import { deleteDatabase } from './services/database/deleteDatabase';
-
+import { csvLoader } from './services/csvMongo/csvLoader';
+import path from "path";
 async function main() {
     const mongo = await connect();
-    let dbName = 'batata'
-    let collectionName = 'jacare_com_pimenta'
-    // let doc = await findDocuments(mongo, dbName, collectionName, { name: { $exists: false } })
-    // let update = await updateDocuments(mongo, dbName, collectionName, { idade: { $exists: true } }, { $unset: { campo: 'tirirca' } })
-    // let update = await deleteDocuments(mongo, dbName, collectionName, { idade: { $exists: true } })
-    let deleteDb = await deleteDatabase(mongo, dbName)
-    console.log(deleteDb)
-    disconect()
+
+
+    const dbName = 'batata2';
+    const collectionName = 'jacare_com_pimenta';
+
+    // Use o módulo path para garantir o caminho correto
+    const pathToFile = path.resolve('C:/Users/ISouza/Desktop/empresas/emp/empresas.csv');
+
+    // Chama a função csvLoader com os parâmetros corretos
+    const testeLoader = await csvLoader(mongo, pathToFile, collectionName, dbName);
+
+    console.log('Resultado do carregamento do CSV:', testeLoader);
+
+    // Desconectar do MongoDB
+    await mongo.close();
+    console.log('Desconectado do MongoDB.');
 }
 
+// Executa a função principal
 main().catch(console.error);
