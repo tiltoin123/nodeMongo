@@ -1,14 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-import csv from 'csv-parser';
-import { searchDatabase } from './services/database/searchDatabase';
-import { createCollection } from './services/collection/createCollection';
 import { connect, disconect } from './services/mongoClient';
-import { listCollections } from './services/collection/listCollections';
-import { insertDocuments } from './services/docs/insertDocuments';
-import { findDocuments } from './services/docs/findDocuments';
-import { updateDocuments } from './services/docs/updateDocuments';
-import { deleteDocuments } from './services/docs/deleteDocuments';
 import { deleteDatabase } from './services/database/deleteDatabase';
 
 async function main() {
