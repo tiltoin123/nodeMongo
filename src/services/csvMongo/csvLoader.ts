@@ -2,12 +2,13 @@ import fs from 'fs';
 import csv from 'csv-parser';
 import { MongoClient } from 'mongodb';
 import { searchCollection } from '../collection/searchCollection';
+import { insertDocuments } from '../docs/insertDocuments';
 
 export const csvLoader = async (
     client: MongoClient,
     path: string,
+    dbName: string,
     collectionName: string,
-    dbName: string
 ): Promise<boolean> => {
     try {
         const collection = await searchCollection(client, dbName, collectionName);
@@ -27,8 +28,9 @@ export const csvLoader = async (
                 })
                 .on('end', async () => {
                     try {
-                        const result = await collection.insertMany(data);
-                        console.log(`${result.insertedCount} documentos inseridos com sucesso!`);
+                        console.log(data)
+                        const result = await insertDocuments(client, dbName, collectionName, data)
+                        console.log(`${result} documentos inseridos com sucesso!`);
                         resolve(); // Resolve a Promise após inserção bem-sucedida
                     } catch (insertError) {
                         console.error('Erro ao inserir documentos:', insertError);

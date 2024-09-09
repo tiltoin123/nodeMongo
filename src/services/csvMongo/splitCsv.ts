@@ -22,8 +22,8 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
 
     fs.createReadStream(inputPath)
         .pipe(csv({
-            // separator: ';',
-            quote: '`',
+            separator: ';',
+            quote: '"',
             skipLines: 0,
             headers: empHeaders,
             // headers: empHeaders
@@ -55,11 +55,11 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
 };
 
 const writeCsv = (path: string, data: Record<string, string>[], headers: string[]) => {
-    const quotedHeaders = headers.map(header => `"${header}"`).join(';');
+    const quotedHeaders = headers.join(';');
 
     const rows = data.map(row => Object.values(row).join(';')).join('\n');
 
-    const csvContent = `${quotedHeaders}\n${rows}`;
+    const csvContent = `${headers}\n${rows}`;
 
     fs.writeFileSync(path, csvContent);
 };
