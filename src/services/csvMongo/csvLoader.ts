@@ -30,7 +30,6 @@ export const csvLoader = async (
                     try {
                         console.log(data);
                         const result = await insertDocuments(client, dbName, collectionName, data);
-                        console.log(`${result} documentos inseridos com sucesso!`);
                         resolve(); // Resolve a Promise após inserção bem-sucedida
                     } catch (insertError) {
                         console.error('Erro ao inserir documentos:', insertError);

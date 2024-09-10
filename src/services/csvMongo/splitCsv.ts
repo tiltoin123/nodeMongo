@@ -23,30 +23,26 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
     fs.createReadStream(inputPath)
         .pipe(csv({
             separator: ',',
-            quote: '"',
+            // quote: '"',
             skipLines: 0,
             headers: empHeaders,
-            raw: true,
             // headers: empHeaders
         }))
         .on('data', (row: Record<string, string>) => {
             for (const key in row) {
                 row[key] = row[key].replace(/,/g, '.');
                 row[key] = row[key].replace(/;/g, ',');
-                // if (row[key].startsWith('"') && !row[key].endsWith('"')) {
-                //     row[key] = `"${row[key]}`;
-                // } else if (!row[key].startsWith('"') && row[key].endsWith('"')) {
-                //     row[key] = `${row[key]}"`;
-                // }
+
+                row[key] = `"${row[key]}"`;
+
             }
             lineCount++;
             rows.push(row);
 
             if (lineCount >= linesPerFile) {
-                // const outputPath = `${outputDir}/estabelecimentos0${fileCount}.csv`;
-                const outputPath = `${outputDir}/empresas${fileCount}.csv`;
+                // const outputPath = ${outputDir}/estabelecimentos0${fileCount}.csv;
+                const outputPath = `${outputDir}/empresas${fileCount}.csv`
                 writeCsv(outputPath, rows, empHeaders);
-                console.log("escreveu", `${outputDir}/${outputPath}`)
                 fileCount++;
                 lineCount = 0;
                 rows = [];
@@ -54,13 +50,10 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
         })
         .on('end', () => {
             if (rows.length > 0) {
-                const outputPath = `${outputDir}/empresas${fileCount}.csv`;
-                // const outputPath = `${outputDir}/estabelecimentos0${fileCount}.csv`;
+                const outputPath = `${outputDir}/empresas${fileCount}.csv`
+                // const outputPath = ${outputDir}/estabelecimentos0${fileCount}.csv;
                 writeCsv(outputPath, rows, empHeaders);
-                console.log("escreveu", `${outputDir}/${outputPath}`)
-                // console.log("escreveu", `${outputDir}/estabelecimentos0${fileCount}.csv`)
             }
-            console.log('Arquivo CSV dividido com sucesso!');
             return true
         });
 };
