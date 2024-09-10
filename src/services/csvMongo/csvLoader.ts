@@ -28,7 +28,6 @@ export const csvLoader = async (
                 })
                 .on('end', async () => {
                     try {
-                        console.log(data);
                         const result = await insertDocuments(client, dbName, collectionName, data);
                         resolve(); // Resolve a Promise após inserção bem-sucedida
                     } catch (insertError) {
