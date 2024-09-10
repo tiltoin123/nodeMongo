@@ -22,21 +22,25 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
 
     fs.createReadStream(inputPath)
         .pipe(csv({
-            separator: ';',
+            separator: ',',
             quote: '"',
             skipLines: 0,
             headers: empHeaders,
             // headers: empHeaders
         }))
         .on('data', (row: Record<string, string>) => {
+            for (const key in row) {
+                row[key] = row[key].replace(/,/g, '.');
+                row[key] = row[key].replace(/;/g, ',');
+            }
             lineCount++;
             rows.push(row);
 
             if (lineCount >= linesPerFile) {
                 // const outputPath = `${outputDir}/estabelecimentos0${fileCount}.csv`;
-                const outputPath = `${outputDir}/empresas.csv.EMPRECSV${fileCount}.csv`;
+                const outputPath = `${outputDir}/empresas${fileCount}.csv`;
                 writeCsv(outputPath, rows, empHeaders);
-                console.log("escreveu", `${outputDir}/empresas.csv.EMPRECSV${fileCount}.csv`)
+                console.log("escreveu", `${outputDir}/${outputPath}`)
                 fileCount++;
                 lineCount = 0;
                 rows = [];
@@ -44,10 +48,10 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
         })
         .on('end', () => {
             if (rows.length > 0) {
-                const outputPath = `${outputDir}/empresas.csv.EMPRECSV${fileCount}.csv`;
+                const outputPath = `${outputDir}/empresas${fileCount}.csv`;
                 // const outputPath = `${outputDir}/estabelecimentos0${fileCount}.csv`;
                 writeCsv(outputPath, rows, empHeaders);
-                console.log("escreveu", `${outputDir}/empresas.csv.EMPRECSV${fileCount}.csv`)
+                console.log("escreveu", `${outputDir}/${outputPath}`)
                 // console.log("escreveu", `${outputDir}/estabelecimentos0${fileCount}.csv`)
             }
             console.log('Arquivo CSV dividido com sucesso!');
@@ -55,11 +59,11 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
 };
 
 const writeCsv = (path: string, data: Record<string, string>[], headers: string[]) => {
-    const quotedHeaders = headers.join(';');
+    const quotedHeaders = headers.join(',');
 
-    const rows = data.map(row => Object.values(row).join(';')).join('\n');
+    const rows = data.map(row => Object.values(row).join(',')).join('\n');
 
-    const csvContent = `${headers}\n${rows}`;
+    const csvContent = `${quotedHeaders}\n${rows}`;
 
     fs.writeFileSync(path, csvContent);
 };

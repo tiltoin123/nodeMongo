@@ -21,15 +21,15 @@ export const csvLoader = async (
 
         // Encapsular a leitura do CSV e inserção dentro de uma Promise
         await new Promise<void>((resolve, reject) => {
-            fs.createReadStream(path)
+            const readStream = fs.createReadStream(path)
                 .pipe(csv())
                 .on('data', (row) => {
                     data.push(row);
                 })
                 .on('end', async () => {
                     try {
-                        console.log(data)
-                        const result = await insertDocuments(client, dbName, collectionName, data)
+                        console.log(data);
+                        const result = await insertDocuments(client, dbName, collectionName, data);
                         console.log(`${result} documentos inseridos com sucesso!`);
                         resolve(); // Resolve a Promise após inserção bem-sucedida
                     } catch (insertError) {
@@ -41,6 +41,11 @@ export const csvLoader = async (
                     console.error('Erro ao ler o CSV:', error);
                     reject(error); // Rejeita a Promise em caso de erro na leitura
                 });
+
+            // Encerra o stream após o processamento
+            readStream.on('close', () => {
+                resolve();
+            });
         });
 
         return true; // Retorna true se tudo der certo

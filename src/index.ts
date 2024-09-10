@@ -21,7 +21,7 @@ async function main() {
     // // Desconectar do MongoDB
     // await mongo.close();
     // console.log('Desconectado do MongoDB.');
-    // await splitCsv('C:/Users/ISouza/Desktop/empresas/emp/empresas.csv.EMPRECSV', 'C:/Users/ISouza/Desktop/empresas/emp/split_files', 200000);
+    await splitCsv('C:/Users/ISouza/Desktop/empresas/emp/empresas.csv.EMPRECSV', 'C:/Users/ISouza/Desktop/empresas/emp/split_files', 200000);
     let csvFolder = 'C:/Users/ISouza/Desktop/empresas/emp/split_files/'
     let csv = await listCsv(csvFolder)
     for (let i = 0; i < csv.length; i++) {
