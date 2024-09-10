@@ -26,12 +26,18 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
             quote: '"',
             skipLines: 0,
             headers: empHeaders,
+            raw: true,
             // headers: empHeaders
         }))
         .on('data', (row: Record<string, string>) => {
             for (const key in row) {
                 row[key] = row[key].replace(/,/g, '.');
                 row[key] = row[key].replace(/;/g, ',');
+                // if (row[key].startsWith('"') && !row[key].endsWith('"')) {
+                //     row[key] = `"${row[key]}`;
+                // } else if (!row[key].startsWith('"') && row[key].endsWith('"')) {
+                //     row[key] = `${row[key]}"`;
+                // }
             }
             lineCount++;
             rows.push(row);
@@ -55,6 +61,7 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
                 // console.log("escreveu", `${outputDir}/estabelecimentos0${fileCount}.csv`)
             }
             console.log('Arquivo CSV dividido com sucesso!');
+            return true
         });
 };
 

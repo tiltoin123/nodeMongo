@@ -23,14 +23,14 @@ async function main() {
     // console.log('Desconectado do MongoDB.');
     await splitCsv('C:/Users/ISouza/Desktop/empresas/emp/empresas.csv.EMPRECSV', 'C:/Users/ISouza/Desktop/empresas/emp/split_files', 200000);
     let csvFolder = 'C:/Users/ISouza/Desktop/empresas/emp/split_files/'
-    let csv = await listCsv(csvFolder)
-    for (let i = 0; i < csv.length; i++) {
-        let currentFile = csvFolder + csv[i]
-        currentFile = currentFile.toString()
-        console.log('inserindo:', currentFile)
-        await csvLoader(mongo, currentFile, dbName, collectionName)
+    // let csv = await listCsv(csvFolder)
+    // for (let i = 0; i < csv.length; i++) {
+    //     let currentFile = csvFolder + csv[i]
+    //     currentFile = currentFile.toString()
+    //     console.log('inserindo:', currentFile)
+    //     await csvLoader(mongo, currentFile, dbName, collectionName)
 
-    }
+    // }
 }
 
 // Executa a função principal
