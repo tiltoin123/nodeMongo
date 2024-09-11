@@ -1,19 +1,36 @@
-db.empresas.aggregate([
-    {
-        // Agrupa os documentos pelo campo que você quer verificar duplicados
-        $group: {
-            _id: "$cnpj", // Campo para agrupar, neste caso, 'cnpj'
-            count: { $sum: 1 } // Conta o número de ocorrências de cada valor
+import { MongoClient } from "mongodb";
+import { searchCollection } from "../collection/searchCollection";
+
+export const countDuplicatedCnpj = async (client: MongoClient, dbName: string, collectionName: string) => {
+    try {
+        const collection = await searchCollection(client, dbName, collectionName);
+        if (!collection) {
+            console.error('Collection not found');
+            return false;
         }
-    },
-    {
-        // Filtra os grupos que têm mais de um documento (ou seja, são duplicados)
-        $match: {
-            count: { $gt: 1 } // Somente grupos com mais de um documento
-        }
-    },
-    {
-        // Opcional: ordena os resultados para facilitar a leitura
-        $sort: { count: -1 }
+
+        const db = client.db(dbName);
+        const duplicates = await db.collection(collectionName).aggregate([
+            {
+                $group: {
+                    _id: "$cnpj",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $match: {
+                    count: { $gt: 1 }
+                }
+            },
+            {
+                $sort: { count: -1 }
+            }
+        ]).toArray();
+
+        console.log(duplicates);
+        return duplicates;
+    } catch (error) {
+        console.error('Error counting duplicated CNPJ:', error);
+        return false;
     }
-]);
+};

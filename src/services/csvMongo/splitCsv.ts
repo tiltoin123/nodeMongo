@@ -4,14 +4,14 @@ import csv from 'csv-parser';
 import path from 'path'
 
 export const splitCsv = async (inputPath: string, outputDir: string, linesPerFile: number): Promise<void> => {
-    // const estabHeaders = ["cnpj", "ordem", "digito", "idMatrizFilial",
-    //     "situacao", "dataSituacao", "motivoSituacao", "cidadeExterior",
-    //     "pais", "dataInicio", "cnaePrincipal", "cnaeSecundario", "tipoLogradouro",
-    //     "logradouro", "numero", "complemento", "bairro", "cep", "uf", "municipio",
-    //     "ddd1", "telefone1", "ddd2", "telefone2", "dddFax", "fax", "email", "situacaoEspecial",
-    //     "dataSituacaoEspecial"]
-    const empHeaders = ["cnpj", "razaoSocial", "naturezaJur", "qualiResponsavel",
-        "capitalSocial", "porteEmpresa", "enteFederativoResponsavel"];
+    const estabHeaders = ["cnpj", "ordem", "digito", "idMatrizFilial",
+        "situacao", "dataSituacao", "motivoSituacao", "cidadeExterior",
+        "pais", "dataInicio", "cnaePrincipal", "cnaeSecundario", "tipoLogradouro",
+        "logradouro", "numero", "complemento", "bairro", "cep", "uf", "municipio",
+        "ddd1", "telefone1", "ddd2", "telefone2", "dddFax", "fax", "email", "situacaoEspecial",
+        "dataSituacaoEspecial"]
+    // const empHeaders = ["cnpj", "razaoSocial", "naturezaJur", "qualiResponsavel",
+    //     "capitalSocial", "porteEmpresa", "enteFederativoResponsavel"];
 
     if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir);
@@ -27,7 +27,7 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
             .pipe(csv({
                 separator: ',',
                 skipLines: 0,
-                headers: empHeaders,
+                headers: estabHeaders,
             }))
             .on('data', (row: Record<string, string>) => {
                 for (const key in row) {
@@ -40,7 +40,7 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
 
                 if (lineCount >= linesPerFile) {
                     const outputPath = `${outputDir}/${fileName}${fileCount}.csv`;
-                    writeCsv(outputPath, rows, empHeaders);
+                    writeCsv(outputPath, rows, estabHeaders);
                     fileCount++;
                     lineCount = 0;
                     rows = [];
@@ -49,7 +49,7 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
             .on('end', () => {
                 if (rows.length > 0) {
                     const outputPath = `${outputDir}/${fileName}${fileCount}.csv`;
-                    writeCsv(outputPath, rows, empHeaders);
+                    writeCsv(outputPath, rows, estabHeaders);
                 }
                 resolve(); // Finaliza a Promise ao terminar de ler e escrever os dados
             })
