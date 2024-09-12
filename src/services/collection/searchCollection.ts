@@ -7,7 +7,6 @@ export const searchCollection = async (client: MongoClient, dbName: string, coll
         const collectionExists = await cursor.hasNext();
 
         if (collectionExists) {
-            console.log('Collection found!');
             const collection = await cursor.next();
             return collection!
         } else {
