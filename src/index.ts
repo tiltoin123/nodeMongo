@@ -32,7 +32,7 @@ async function main() {
         await csvLoader(mongo, currentFile, dbName, collectionName)
     }
 
-    mongo.close()
+    // mongo.close()
 }
 
 main().catch(console.error);
