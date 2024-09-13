@@ -3,14 +3,7 @@ import fs from 'fs';
 import csv from 'csv-parser';
 import path from 'path'
 
-export const splitCsv = async (inputPath: string, outputDir: string, linesPerFile: number): Promise<void> => {
-    const estabHeaders = ["cnpj", "ordem", "digito", "idMatrizFilial", "nomeFantasia",
-        "situacao", "dataSituacao", "motivoSituacao", "cidadeExterior", "pais",
-        "dataInicio", "cnaePrincipal", "cnaeSecundario", "tipoLogradouro", "logradouro",
-        "numero", "complemento", "bairro", "cep", "uf", "municipio", "ddd1", "telefone1",
-        "ddd2", "telefone2", "dddFax", "fax", "email", "situacaoEspecial", "dataSituacaoEspecial"]
-    // const empHeaders = ["cnpj", "razaoSocial", "naturezaJur", "qualiResponsavel",
-    //     "capitalSocial", "porteEmpresa", "enteFederativoResponsavel"];
+export const splitCsv = async (inputPath: string, outputDir: string, headers: string[], linesPerFile: number): Promise<void> => {
 
     if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir);
@@ -26,12 +19,16 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
             .pipe(csv({
                 separator: ',',
                 skipLines: 0,
-                headers: estabHeaders,
+                headers
             }))
             .on('data', (row: Record<string, string>) => {
                 for (const key in row) {
+
+                    row[key] = padLineUntilSemicolon(row[key])
+
                     row[key] = row[key].replace(/,/g, '.');
-                    row[key] = row[key].replace(/;/g, ',');
+                    // row[key] = row[key].replace(/;/g, ',');
+                    row[key] = row[key].replace(/;/g, '","');//municipiosfixapenas
                     row[key] = `"${row[key]}"`;  // Ajuste para adicionar aspas duplas
                     row[key] = row[key].replace(/,",/g, ',"",');
                     row[key] = row[key].replace(/,",/g, ',"",');
@@ -41,7 +38,7 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
 
                 if (lineCount >= linesPerFile) {
                     const outputPath = `${outputDir}/${fileName}${fileCount}.csv`;
-                    writeCsv(outputPath, rows, estabHeaders);
+                    writeCsv(outputPath, rows, headers);
                     fileCount++;
                     lineCount = 0;
                     rows = [];
@@ -50,7 +47,7 @@ export const splitCsv = async (inputPath: string, outputDir: string, linesPerFil
             .on('end', () => {
                 if (rows.length > 0) {
                     const outputPath = `${outputDir}/${fileName}${fileCount}.csv`;
-                    writeCsv(outputPath, rows, estabHeaders);
+                    writeCsv(outputPath, rows, headers);
                 }
                 resolve(); // Finaliza a Promise ao terminar de ler e escrever os dados
             })
@@ -67,3 +64,18 @@ const writeCsv = (path: string, data: Record<string, string>[], headers: string[
     const csvContent = `${quotedHeaders}\n${rows}`;
     fs.writeFileSync(path, csvContent);
 };
+
+const padLineUntilSemicolon = (line: string) => {
+    const semicolonIndex = line.indexOf(';');
+    if (semicolonIndex === -1) {
+        return line;
+    }
+    const beforeSemicolon = line.substring(0, semicolonIndex);
+
+    const padded = beforeSemicolon.padStart(4, '0');
+
+    const newLine = padded + line.substring(semicolonIndex);
+
+    return newLine;
+}
+
