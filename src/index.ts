@@ -30,31 +30,38 @@ async function main() {
     // }
     // console.log("acabou, arquivos alterados:", csvToSplit.length)
 
-    // let csvForDb = await listFiles(outputPath)
-    // for (let i = 0; i < csvForDb.length; i++) {
-    //     let currentFile = outputPath + csvForDb[i]
-    //     currentFile = currentFile.toString()
-    //     await csvLoader(mongo, currentFile, dbName, collectionName)
-    // }
     // let end = ['Rua Ernesto Silvio 1130,Franca,SP, Brasil', 'Rua  Maj. Mendonça 1659,Franca,SP,Brasil', 'Avenida Alonso y Alonso 500,Franca,SP,Brasil']
     // for (let i = 0; i < end.length; i++) {
     //     console.log(await buscarEndereco(end[i]))
     // }
 
-    for (let i = 0; i < csvToSplit.length; i++) {
-        let currentFile = outputPath + csvToSplit[i]
+    // for (let i = 0; i < csvToSplit.length; i++) {
+    //     let currentFile = outputPath + csvToSplit[i]
+    //     currentFile = currentFile.toString()
+
+    //     await compareAndModifyCsv(
+    //         currentFile,       // O CSV com os dados originais
+    //         'codTom',                // Coluna alvo para comparação no arquivoAlvo
+    //         'C:/Users/ISouza/Desktop/empresas/municipios/fixed/split_files/municipios1.csv',     // O CSV com os valores a serem comparados
+    //         'tom',                   // Coluna de comparação no arquivoValores
+    //         'nomeTom',               // Coluna que será adicionada
+    //         'municipio'              // Nova coluna no arquivo de destino
+    //     );
+    // }
+    let f = await listFiles(outputPath + '/mod')
+    // for (let i = 0; i < f.length; i++) {
+    //     await fixEncoding(outputPath + '/mod/' + f[i], outputPath + '/mod/' + f[i])
+    //     console.log('fixEncoding', f[i])
+    // }
+    // console.log('terminou o fix encoding')
+
+    for (let i = 0; i < f.length; i++) {
+        let currentFile = outputPath + f[i]
         currentFile = currentFile.toString()
-
-        await compareAndModifyCsv(
-            currentFile,       // O CSV com os dados originais
-            'codTom',                // Coluna alvo para comparação no arquivoAlvo
-            'C:/Users/ISouza/Desktop/empresas/municipios/fixed/split_files/municipios1.csv',     // O CSV com os valores a serem comparados
-            'tom',                   // Coluna de comparação no arquivoValores
-            'nomeTom',               // Coluna que será adicionada
-            'municipio'              // Nova coluna no arquivo de destino
-        );
+        await csvLoader(mongo, currentFile, dbName, collectionName)
+        console.log('inseriu', collectionName + i)
     }
-
+    console.log('terminou de inserir no banco')
 }
 
 main().catch(console.error);
