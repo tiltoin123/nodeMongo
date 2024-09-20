@@ -27,8 +27,8 @@ export const splitCsv = async (inputPath: string, outputDir: string, headers: st
                     row[key] = padLineUntilSemicolon(row[key])
 
                     row[key] = row[key].replace(/,/g, '.');
-                    // row[key] = row[key].replace(/;/g, ',');
-                    row[key] = row[key].replace(/;/g, '","');//municipiosfixapenas
+                    row[key] = row[key].replace(/;/g, ',');
+                    // row[key] = row[key].replace(/;/g, '","');//municipiosfixapenas
                     row[key] = `"${row[key]}"`;  // Ajuste para adicionar aspas duplas
                     row[key] = row[key].replace(/,",/g, ',"",');
                     row[key] = row[key].replace(/,",/g, ',"",');
@@ -58,14 +58,14 @@ export const splitCsv = async (inputPath: string, outputDir: string, headers: st
     });
 };
 
-const writeCsv = (path: string, data: Record<string, string>[], headers: string[]) => {
+export const writeCsv = (path: string, data: Record<string, string>[], headers: string[]) => {
     const quotedHeaders = headers.map(header => `"${header}"`).join(',');
     const rows = data.map(row => Object.values(row).join(',')).join('\n');
     const csvContent = `${quotedHeaders}\n${rows}`;
     fs.writeFileSync(path, csvContent);
 };
 
-const padLineUntilSemicolon = (line: string) => {
+export const padLineUntilSemicolon = (line: string) => {
     const semicolonIndex = line.indexOf(';');
     if (semicolonIndex === -1) {
         return line;
